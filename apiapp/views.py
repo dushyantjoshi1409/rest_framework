@@ -7,11 +7,13 @@ from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def index(request,id = 0):
+    # GET_REQUEST
     if request.method == 'GET':
         flights = Flight.objects.all()
         new_data = FlightSerializer(flights, many=True)
         return JsonResponse(new_data.data, safe=False)
     
+    # POST_REQUEST
     elif request.method == 'POST':
         flights = JSONParser().parse(request)
         flight_serializer = FlightSerializer(data=flights)
@@ -20,6 +22,7 @@ def index(request,id = 0):
             return JsonResponse("data added succesfully", safe=False)
         return JsonResponse("data not added succesfully", safe=False)
 
+    # PUT_REQUEST
     elif request.method == 'PUT':
         flights = JSONParser().parse(request)
         flight_data = Flight.objects.get(id=flights['id'])
@@ -29,7 +32,9 @@ def index(request,id = 0):
             return JsonResponse("data updated succesfully", safe=False)
         return JsonResponse("data not updated succesfully", safe=False)
 
+    # DELETE_REQUEST    
     elif request.method == 'DELETE':
         flight_data = Flight.objects.get(id=id)
         flight_data.delete()
         return JsonResponse("data deleted succesfully", safe=False)
+    
