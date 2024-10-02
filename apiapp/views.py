@@ -4,6 +4,7 @@ from .serializers import FlightSerializer
 from rest_framework.parsers import JSONParser
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import default_storage
 
 @csrf_exempt
 def index(request,id = 0):
@@ -37,4 +38,11 @@ def index(request,id = 0):
         flight_data = Flight.objects.get(id=id)
         flight_data.delete()
         return JsonResponse("data deleted succesfully", safe=False)
-    
+
+
+# SAVE_FILE
+@csrf_exempt    
+def savefile(request):
+    file = request.FILES['file']
+    file_name = default_storage.save(file.name, file)
+    return JsonResponse(file_name, safe=False)
